@@ -14,8 +14,10 @@ info:
   contact:
     name: Team Médecins Sans Tokens
 servers:
+  - url: https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com/pharmacies/v1
+    description: Demo API on AWS (Lambda + API Gateway)
   - url: https://api.ma-sante-tranquille.example/pharmacies/v1
-    description: Demo environment
+    description: Production target, through Fabric (illustrative)
 security:
   - apiKey: []
 tags:
