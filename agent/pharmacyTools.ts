@@ -16,7 +16,7 @@ async function geocode(address: string): Promise<{ lat: number; lon: number; dis
   try {
     const url = `${NOMINATIM}/search?q=${encodeURIComponent(address + ', France')}&format=json&limit=1&countrycodes=fr`;
     const resp = await fetch(url, {
-      headers: { 'User-Agent': 'fr-alerte-sante-agent/1.0 (contact@sante.gouv.fr)' },
+      headers: { 'User-Agent': 'ma-sante-tranquille-hackathon/1.0 (+https://github.com/ecointet/hackathon-mst-agent)' },
       signal: AbortSignal.timeout(5_000),
     });
     if (!resp.ok) return null;

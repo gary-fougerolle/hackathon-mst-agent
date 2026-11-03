@@ -1,12 +1,12 @@
-# Pandemic Alert — Agent MST
+# Ma Santé Tranquille — Clara
 
-**By Médecins Sans Tokens × Santé Publique France**
+**By team Médecins Sans Tokens**
 
 ---
 
 ## Overview
 
-Pandemic Alert is an AI-powered public health dashboard designed for epidemic crisis situations. It provides citizens with real-time epidemic indicators and a conversational health assistant — **Clara** — that guides them through three key actions: checking the current health situation, finding a nearby testing center, and booking a doctor appointment.
+Ma Santé Tranquille is an AI-powered public health dashboard designed for epidemic crisis situations. It provides citizens with real-time epidemic indicators and a conversational health assistant — **Clara** — that guides them through three key actions: checking the current health situation, finding a nearby testing center, and booking a doctor appointment.
 
 The agent is built on the [Mastra](https://mastra.ai) framework and powered by Claude (Anthropic). It is designed to be deployed as a lightweight, self-contained container with a built-in web frontend.
 
@@ -33,6 +33,20 @@ Three one-tap cards on the homepage send a pre-filled message to Clara:
 - **Get Tested** — find a nearby pharmacy or testing center
 - **See a Doctor** — book an appointment via Doctolib
 - **Current Measures** — get the latest health recommendations
+
+---
+
+## API specs (Fabric routes)
+
+The three APIs Clara uses are described by OpenAPI specs in [`specs/`](specs/). Fabric imports them as governed services, and the same specs power the Postman workspace and the Fern portal.
+
+| Spec | Journey step |
+|------|--------------|
+| `specs/health-surveillance.openapi.yaml` | Local health trends by postal code |
+| `specs/pharmacies.openapi.yaml` | Nearby pharmacies, on-duty pharmacy, test booking |
+| `specs/appointments.openapi.yaml` | Practitioners, slots, appointment booking |
+
+Astro blueprint name: `healthcare-ma-sante-tranquille` (hackathon naming rule `<industry>-<use case>`). Models go through the Astro Gateway or Fabric, never directly to a model provider.
 
 ---
 

@@ -1,0 +1,268 @@
+openapi: 3.0.3
+info:
+  title: Ma Santé Tranquille – Pharmacies API
+  version: 1.0.0
+  description: |
+    Finds nearby pharmacies, their opening hours and services (rapid antigen test, vaccination),
+    finds the on-duty pharmacy, and books a test.
+
+    Used by the Ma Santé Tranquille agent in step 3 of the "I'm sick" journey.
+    Searches use **the postal code only**, never the identity. A booking is sent only after
+    the patient's **explicit confirmation**.
+
+    Simulated data for the hackathon.
+  contact:
+    name: Team Médecins Sans Tokens
+servers:
+  - url: https://api.ma-sante-tranquille.example/pharmacies/v1
+    description: Demo environment
+security:
+  - apiKey: []
+tags:
+  - name: Search
+    description: Nearby pharmacies, services and on-duty pharmacy.
+  - name: Bookings
+    description: Booking a pharmacy service, after the patient confirms.
+paths:
+  /pharmacies:
+    get:
+      tags: [Search]
+      operationId: searchPharmacies
+      summary: Nearby pharmacies offering a service
+      description: Lists pharmacies around a postal code, with distance, today's opening hours and the status of the requested service (confirmed or to check).
+      parameters:
+        - name: postal_code
+          in: query
+          required: true
+          description: French 5-digit postal code.
+          schema:
+            type: string
+            pattern: '^[0-9]{5}$'
+          example: '69003'
+        - name: service
+          in: query
+          required: false
+          description: Requested service.
+          schema:
+            type: string
+            enum: [rapid_antigen_test, flu_vaccination, covid_vaccination]
+          example: rapid_antigen_test
+        - name: radius_km
+          in: query
+          required: false
+          description: Search radius in kilometers.
+          schema:
+            type: integer
+            default: 3
+            maximum: 20
+      responses:
+        '200':
+          description: Pharmacies found, sorted by distance.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pharmacy'
+              example:
+                results:
+                  - pharmacy_id: ph-69003-01
+                    name: Pharmacie de la Part-Dieu
+                    address: 12 rue Garibaldi, 69003 Lyon
+                    distance_km: 0.6
+                    hours_today: 08:30–20:00
+                    open_now: true
+                    service:
+                      code: rapid_antigen_test
+                      status: confirmed
+                      bookable: true
+                  - pharmacy_id: ph-69003-02
+                    name: Pharmacie Monplaisir
+                    address: 4 avenue des Frères Lumière, 69003 Lyon
+                    distance_km: 1.4
+                    hours_today: 09:00–19:30
+                    open_now: true
+                    service:
+                      code: rapid_antigen_test
+                      status: to_check
+                      bookable: false
+  /pharmacies/on-duty:
+    get:
+      tags: [Search]
+      operationId: getOnDutyPharmacy
+      summary: Nearest on-duty pharmacy
+      description: Returns the on-duty pharmacy for the area and how to access it (call first, night window).
+      parameters:
+        - name: postal_code
+          in: query
+          required: true
+          description: French 5-digit postal code.
+          schema:
+            type: string
+            pattern: '^[0-9]{5}$'
+          example: '69003'
+      responses:
+        '200':
+          description: On-duty pharmacy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnDutyPharmacy'
+              example:
+                pharmacy_id: ph-69007-09
+                name: Pharmacie du Rhône
+                address: 30 avenue Jean Jaurès, 69007 Lyon
+                distance_km: 2.8
+                on_duty_until: '2026-11-04T08:30:00+01:00'
+                access_conditions: Night window. Bring a prescription or call 3237 first.
+  /pharmacies/{pharmacy_id}/bookings:
+    post:
+      tags: [Bookings]
+      operationId: bookPharmacyService
+      summary: Book a test at a pharmacy
+      description: |
+        Books a slot for a service. Call it **only after the patient explicitly confirms**
+        (`patient_confirmed: true`). The patient is identified by an opaque token:
+        no identity travels in clear.
+      parameters:
+        - name: pharmacy_id
+          in: path
+          required: true
+          description: ID returned by the search.
+          schema:
+            type: string
+          example: ph-69003-01
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+            example:
+              service: rapid_antigen_test
+              slot: '2026-11-04T10:15:00+01:00'
+              patient_token: tok_pat_7f3a91
+              patient_confirmed: true
+      responses:
+        '201':
+          description: Booking confirmed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+              example:
+                booking_id: bk-ph-000184
+                status: confirmed
+                pharmacy: Pharmacie de la Part-Dieu
+                service: rapid_antigen_test
+                slot: '2026-11-04T10:15:00+01:00'
+                instructions: Arrive 5 minutes before your slot.
+        '409':
+          description: Slot no longer available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: slot_unavailable
+                message: This slot was just taken. Offer the patient another time.
+        '428':
+          description: Patient confirmation missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: confirmation_required
+                message: A booking requires the patient's explicit confirmation.
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Access key issued to the agent by the Fabric gateway.
+  schemas:
+    Pharmacy:
+      type: object
+      properties:
+        pharmacy_id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        distance_km:
+          type: number
+        hours_today:
+          type: string
+        open_now:
+          type: boolean
+        service:
+          type: object
+          properties:
+            code:
+              type: string
+            status:
+              type: string
+              enum: [confirmed, to_check, unavailable]
+              description: "`to_check` when the pharmacy has not confirmed the service today."
+            bookable:
+              type: boolean
+    OnDutyPharmacy:
+      type: object
+      properties:
+        pharmacy_id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        distance_km:
+          type: number
+        on_duty_until:
+          type: string
+          format: date-time
+        access_conditions:
+          type: string
+    BookingRequest:
+      type: object
+      required: [service, slot, patient_token, patient_confirmed]
+      properties:
+        service:
+          type: string
+        slot:
+          type: string
+          format: date-time
+        patient_token:
+          type: string
+          description: Opaque token issued by Fabric. Never the name or the social security number.
+        patient_confirmed:
+          type: boolean
+          description: Must be true. The patient approved the pharmacy, the slot and the data sent.
+    Booking:
+      type: object
+      properties:
+        booking_id:
+          type: string
+        status:
+          type: string
+        pharmacy:
+          type: string
+        service:
+          type: string
+        slot:
+          type: string
+          format: date-time
+        instructions:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string

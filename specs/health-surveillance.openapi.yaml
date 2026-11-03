@@ -1,0 +1,159 @@
+openapi: 3.0.3
+info:
+  title: Ma Santé Tranquille – Health Surveillance API
+  version: 1.0.0
+  description: |
+    Local epidemic trends (flu, COVID-19, bronchiolitis, gastroenteritis) by French postal code,
+    based on Santé publique France surveillance indicators.
+
+    Every response states **the source, the date and the area** of the data. Trends describe an
+    area: they **cannot tell what illness a person has**.
+
+    Used by the Ma Santé Tranquille agent in step 2 of the "I'm sick" journey.
+    Dated, simulated data for the hackathon.
+  contact:
+    name: Team Médecins Sans Tokens
+servers:
+  - url: https://api.ma-sante-tranquille.example/surveillance/v1
+    description: Demo environment
+security:
+  - apiKey: []
+tags:
+  - name: Trends
+    description: Circulation indicators for tracked infections, by area.
+paths:
+  /trends:
+    get:
+      tags: [Trends]
+      operationId: listTrends
+      summary: Epidemic trends around a postal code
+      description: |
+        Returns the latest indicators for the area of the postal code.
+        Only the postal code is sent: no data about the person.
+      parameters:
+        - name: postal_code
+          in: query
+          required: true
+          description: French 5-digit postal code.
+          schema:
+            type: string
+            pattern: '^[0-9]{5}$'
+          example: '69003'
+        - name: condition
+          in: query
+          required: false
+          description: Optional filter on one tracked infection.
+          schema:
+            type: string
+            enum: [flu, covid19, bronchiolitis, gastroenteritis]
+      responses:
+        '200':
+          description: Trends for the area.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trends'
+              example:
+                source: Santé publique France – syndromic surveillance (simulated data)
+                data_date: '2026-10-26'
+                week: 2026-W44
+                area:
+                  postal_code: '69003'
+                  department: Rhône (69)
+                  region: Auvergne-Rhône-Alpes
+                indicators:
+                  - condition: flu
+                    level: moderate
+                    trend: rising
+                    rate_per_100k: 142
+                  - condition: covid19
+                    level: low
+                    trend: stable
+                    rate_per_100k: 38
+                  - condition: bronchiolitis
+                    level: high
+                    trend: rising
+                    rate_per_100k: 210
+                disclaimer: These trends describe the area. They cannot tell what illness you have.
+        '400':
+          description: Invalid postal code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: invalid_postal_code
+                message: The postal code must have 5 digits.
+        '404':
+          description: No data for this area.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: no_data_for_area
+                message: No indicator is available for this postal code this week.
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Access key issued to the agent by the Fabric gateway.
+  schemas:
+    Trends:
+      type: object
+      required: [source, data_date, area, indicators, disclaimer]
+      properties:
+        source:
+          type: string
+          description: Organization and system the data comes from.
+        data_date:
+          type: string
+          format: date
+          description: Publication date of the indicators.
+        week:
+          type: string
+          description: ISO week covered by the indicators.
+        area:
+          $ref: '#/components/schemas/Area'
+        indicators:
+          type: array
+          items:
+            $ref: '#/components/schemas/Indicator'
+        disclaimer:
+          type: string
+          description: Reminder shown to the patient with the trends.
+    Area:
+      type: object
+      properties:
+        postal_code:
+          type: string
+        department:
+          type: string
+        region:
+          type: string
+    Indicator:
+      type: object
+      properties:
+        condition:
+          type: string
+          enum: [flu, covid19, bronchiolitis, gastroenteritis]
+        level:
+          type: string
+          enum: [low, moderate, high, very_high]
+          description: Circulation level in the area.
+        trend:
+          type: string
+          enum: [falling, stable, rising]
+          description: Change since the previous week.
+        rate_per_100k:
+          type: integer
+          description: Visits or consultations per 100,000 inhabitants.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string

@@ -1,8 +1,8 @@
 {
-  "name": "agent-pandemic-mst",
+  "name": "healthcare-ma-sante-tranquille",
   "version": "0.1.0",
   "type": "module",
-  "description": "Agent Pandemic MST — tableau de bord pandémie + assistant santé Clara, par Médecin Sans Tokens.",
+  "description": "Ma Santé Tranquille — Clara, the health assistant, by team Médecins Sans Tokens.",
   "scripts": {
     "dev": "bun --watch agent/index.ts",
     "start": "bun agent/index.ts",

@@ -1,0 +1,288 @@
+openapi: 3.0.3
+info:
+  title: Ma Santé Tranquille – Appointments API
+  version: 1.0.0
+  description: |
+    Finds practitioners and slots (in person or video) and books an appointment.
+    Target connector: Doctolib, subject to authorized access. For the hackathon, this API is a
+    simulated version that reproduces the journey.
+
+    Used by the Ma Santé Tranquille agent in step 4 of the "I'm sick" journey.
+
+    Data rules:
+    - searches use **the postal code only**, never the identity;
+    - the patient is identified by an **opaque token** issued by Fabric;
+    - a social security number (French NIR) **sent in clear is rejected** (422);
+    - a booking requires the patient's **explicit confirmation**.
+  contact:
+    name: Team Médecins Sans Tokens
+servers:
+  - url: https://api.ma-sante-tranquille.example/appointments/v1
+    description: Demo environment
+security:
+  - apiKey: []
+tags:
+  - name: Practitioners
+    description: Practitioner search and available slots.
+  - name: Appointments
+    description: Booking an appointment, after the patient confirms.
+paths:
+  /practitioners:
+    get:
+      tags: [Practitioners]
+      operationId: searchPractitioners
+      summary: Nearby available practitioners
+      description: Lists practitioners around a postal code, with their next available slot.
+      parameters:
+        - name: postal_code
+          in: query
+          required: true
+          description: French 5-digit postal code.
+          schema:
+            type: string
+            pattern: '^[0-9]{5}$'
+          example: '69003'
+        - name: specialty
+          in: query
+          required: false
+          description: Requested specialty.
+          schema:
+            type: string
+            enum: [general_practitioner, pediatrician, infectious_disease]
+            default: general_practitioner
+        - name: mode
+          in: query
+          required: false
+          description: In-person or video consultation.
+          schema:
+            type: string
+            enum: [in_person, video]
+      responses:
+        '200':
+          description: Practitioners found, sorted by next slot.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Practitioner'
+              example:
+                results:
+                  - practitioner_id: prac-001
+                    name: Dr Claire Martin
+                    specialty: general_practitioner
+                    address: 18 rue Paul Bert, 69003 Lyon
+                    distance_km: 0.8
+                    modes: [in_person, video]
+                    next_slot: '2026-11-04T14:30:00+01:00'
+                  - practitioner_id: prac-002
+                    name: Dr Karim Benali
+                    specialty: general_practitioner
+                    address: 7 cours Lafayette, 69003 Lyon
+                    distance_km: 1.1
+                    modes: [in_person]
+                    next_slot: '2026-11-05T09:00:00+01:00'
+                  - practitioner_id: prac-003
+                    name: Dr Sophie Leroy
+                    specialty: general_practitioner
+                    address: 52 avenue Félix Faure, 69003 Lyon
+                    distance_km: 1.9
+                    modes: [video]
+                    next_slot: null
+  /practitioners/{practitioner_id}/slots:
+    get:
+      tags: [Practitioners]
+      operationId: listSlots
+      summary: Available slots for a practitioner
+      description: Returns free slots over the next 7 days. An empty list means "no availability" and the agent offers an alternative.
+      parameters:
+        - name: practitioner_id
+          in: path
+          required: true
+          description: ID returned by the search.
+          schema:
+            type: string
+          example: prac-001
+      responses:
+        '200':
+          description: Available slots (the list can be empty).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slots'
+              example:
+                practitioner_id: prac-001
+                slots:
+                  - slot_id: sl-001-1430
+                    start: '2026-11-04T14:30:00+01:00'
+                    mode: in_person
+                  - slot_id: sl-001-1645
+                    start: '2026-11-04T16:45:00+01:00'
+                    mode: video
+                  - slot_id: sl-001-0915
+                    start: '2026-11-05T09:15:00+01:00'
+                    mode: in_person
+  /appointments:
+    post:
+      tags: [Appointments]
+      operationId: bookAppointment
+      summary: Book an appointment
+      description: |
+        Books the chosen slot. Call it **only after the patient explicitly confirms** the
+        practitioner, the slot and the data sent. The patient is identified by
+        `patient_token`; a social security number sent in clear is rejected.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequest'
+            example:
+              practitioner_id: prac-001
+              slot_id: sl-001-1430
+              reason_summary: Fever and cough for 2 days
+              patient_token: tok_pat_7f3a91
+              ssn_token: tok_ssn_c41e07
+              patient_confirmed: true
+      responses:
+        '201':
+          description: Appointment confirmed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+              example:
+                appointment_id: apt-000732
+                status: confirmed
+                practitioner: Dr Claire Martin
+                start: '2026-11-04T14:30:00+01:00'
+                mode: in_person
+                address: 18 rue Paul Bert, 69003 Lyon
+                trace_id: trc-5d1b2c
+        '409':
+          description: Slot no longer available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: slot_unavailable
+                message: This slot was just taken. Offer the patient another slot.
+        '422':
+          description: Sensitive data sent in clear.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: sensitive_data_rejected
+                message: A social security number was detected in clear. Use ssn_token.
+        '428':
+          description: Patient confirmation missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: confirmation_required
+                message: An appointment requires the patient's explicit confirmation.
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Access key issued to the agent by the Fabric gateway.
+  schemas:
+    Practitioner:
+      type: object
+      properties:
+        practitioner_id:
+          type: string
+        name:
+          type: string
+        specialty:
+          type: string
+        address:
+          type: string
+        distance_km:
+          type: number
+        modes:
+          type: array
+          items:
+            type: string
+            enum: [in_person, video]
+        next_slot:
+          type: string
+          format: date-time
+          nullable: true
+          description: null when the practitioner has no slot in the next 7 days.
+    Slots:
+      type: object
+      properties:
+        practitioner_id:
+          type: string
+        slots:
+          type: array
+          items:
+            type: object
+            properties:
+              slot_id:
+                type: string
+              start:
+                type: string
+                format: date-time
+              mode:
+                type: string
+                enum: [in_person, video]
+        message:
+          type: string
+    AppointmentRequest:
+      type: object
+      required: [practitioner_id, slot_id, patient_token, patient_confirmed]
+      properties:
+        practitioner_id:
+          type: string
+        slot_id:
+          type: string
+        reason_summary:
+          type: string
+          description: Summary of the need written by the agent, without identity.
+        patient_token:
+          type: string
+          description: Opaque patient token issued by Fabric.
+        ssn_token:
+          type: string
+          description: Substitute token for the social security number, resolved by Fabric for this service only. Optional.
+        patient_confirmed:
+          type: boolean
+          description: Must be true.
+    Appointment:
+      type: object
+      properties:
+        appointment_id:
+          type: string
+        status:
+          type: string
+        practitioner:
+          type: string
+        start:
+          type: string
+          format: date-time
+        mode:
+          type: string
+        address:
+          type: string
+        trace_id:
+          type: string
+          description: Trace ID, to find in the redacted logs.
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string

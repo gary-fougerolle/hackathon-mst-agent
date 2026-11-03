@@ -40,7 +40,7 @@ function simulatedStats(region?: string) {
       couverture_vaccinale_3doses_pct: 78.2 - seed * 0.05,
       tests_realises_7j: 345_000 + seed * 500,
     },
-    source: 'Santé Publique France — données simulées (API indisponible)',
+    source: 'Santé publique France — simulated data (API unavailable)',
   };
 }
 
@@ -89,7 +89,7 @@ export const getPandemicStatsTool = createTool({
             retours_a_domicile_7j: Number(r['rad'] ?? 0),
             deces_cumules: Number(r['dc'] ?? 0),
           },
-          source: 'Santé Publique France — données officielles',
+          source: 'Santé publique France — official data',
         };
       }
     } catch {

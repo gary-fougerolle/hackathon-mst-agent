@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  /* Pandemic Alert — Clara chat + alert status */
+  /* Ma Santé Tranquille — Clara chat + alert status */
 
   const $ = (id) => document.getElementById(id);
 
@@ -210,7 +210,7 @@
 
   function welcome() {
     addMsg('bot',
-      'Hello! I\'m **Clara**, your official health assistant from Santé Publique France.\n\n' +
+      'Hello! I\'m **Clara**, the Ma Santé Tranquille health assistant.\n\n' +
       'I can help you:\n' +
       '• Find a **testing site** near you\n' +
       '• Book a **doctor appointment** via Doctolib\n' +

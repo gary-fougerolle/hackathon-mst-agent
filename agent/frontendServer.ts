@@ -83,7 +83,7 @@ async function fetchDashboardStats(): Promise<unknown> {
       taux_positivite: { valeur: 12.3, variation: '+0,8 pt', unite: '%' },
     },
     couverture_vaccinale_pct: 78.2,
-    source: 'Santé Publique France — données simulées',
+    source: 'Santé publique France — simulated data',
   };
 }
 
