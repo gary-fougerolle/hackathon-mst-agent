@@ -1,0 +1,27 @@
+{
+  "name": "agent-pandemic-mst",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Agent Pandemic MST — tableau de bord pandémie + assistant santé Clara, par Médecin Sans Tokens.",
+  "scripts": {
+    "dev": "bun --watch agent/index.ts",
+    "start": "bun agent/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "main": "./agent/index.ts",
+  "dependencies": {
+    "@mastra/core": "^1.64.0",
+    "@mastra/mcp": "latest",
+    "@mastra/memory": "^1.28.2",
+    "@mastra/libsql": "^1.22.3",
+    "@mastra/observability": "^1.17.5",
+    "@mastra/otel-exporter": "^1.3.13",
+    "@opentelemetry/exporter-trace-otlp-proto": "latest",
+    "@ai-sdk/anthropic": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "typescript": "^5.9.3"
+  }
+}

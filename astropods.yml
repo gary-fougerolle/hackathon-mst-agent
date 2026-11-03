@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://astropods.com/schema/package.json
+spec: blueprint/v1
+name: agent-pandemic-mst
+
+agent:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  interfaces:
+    frontend: true
+    # messaging: true  ← activé quand la gateway distante sera connectée
+  inputs:
+    # Clé API Anthropic — utilisée par le LLM du chat (Clara).
+    # Injectée automatiquement par la plateforme via le bloc `models.anthropic` ci-dessous ;
+    # peut être fournie manuellement pour utiliser une clé personnelle.
+    - name: ANTHROPIC_API_KEY
+      datatype: string
+      secret: true
+      optional: true
+      description: "Clé API Anthropic (claude-*) — injectée automatiquement par la plateforme Astro si non renseignée"
+
+    # MCP openGovData — serveur MCP des données ouvertes (data.gouv.fr / SPF)
+    - name: GOV_DATA_MCP_URL
+      datatype: string
+      optional: true
+      description: "URL du serveur MCP openGovData (ex: https://mcp.data.gouv.fr/sse)"
+    - name: GOV_DATA_MCP_TOKEN
+      datatype: string
+      secret: true
+      optional: true
+      description: Token d'authentification du serveur MCP openGovData
+
+    # Doctolib — intégration API de prise de rendez-vous
+    - name: DOCTOLIB_MCP_URL
+      datatype: string
+      optional: true
+      description: "URL du serveur MCP Doctolib (ex: https://api.doctolib.fr/mcp)"
+    - name: DOCTOLIB_API_KEY
+      datatype: string
+      secret: true
+      optional: true
+      description: Clé API Doctolib (Bearer token)
+
+    # Anthropic gateway optionnel (Fabric)
+    - name: FABRIC_BASE_URL
+      datatype: string
+      optional: true
+      description: URL de la passerelle Anthropic compatible
+    - name: FABRIC_GATEWAY_KEY
+      datatype: string
+      secret: true
+      optional: true
+      description: Clé de la passerelle (header X-Gateway-Key)
+
+# Modèle par défaut via l'infrastructure Astro (ANTHROPIC_API_KEY injecté).
+# Remplacé si FABRIC_BASE_URL + FABRIC_GATEWAY_KEY sont tous les deux configurés.
+models:
+  anthropic:
+    provider: anthropic
+
+# dev.interfaces.messaging activé quand la gateway est prête
+# dev:
+#   interfaces:
+#     messaging:
+#       adapters: [web]

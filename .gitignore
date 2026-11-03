@@ -1,0 +1,17 @@
+node_modules/
+
+# Environment & secrets
+.env
+.env.*
+*.local
+
+# CLI auth & local config
+.ast/
+.claude/
+
+# macOS
+.DS_Store
+
+# Build artifacts
+dist/
+*.lock.bak

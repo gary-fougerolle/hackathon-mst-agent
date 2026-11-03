@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Pandemic Alert — Agent MST</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="description" content="Official pandemic information and health assistant. Find testing sites, book a doctor, and get real-time answers." />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="/styles.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+		<div id="header">
+
+			<div class="top">
+
+				<!-- Logo -->
+				<div id="logo">
+					<h1 id="title">MST</h1>
+					<p>Medecins Sans Tokens - The Pandemic Situation</p>
+				</div>
+
+				<!-- Nav -->
+				<nav id="nav">
+					<ul>
+						<li><a href="#top"     id="top-link"    ><span class="icon solid fa-house">Home</span></a></li>
+						<li><a href="#status"  id="status-link" ><span class="icon solid fa-circle-dot">Alert Status</span></a></li>
+						<li><a href="#actions" id="actions-link"><span class="icon solid fa-hand-holding-medical">Get Help</span></a></li>
+						<li><a href="#chat"    id="chat-link"   ><span class="icon solid fa-comments">Ask Clara</span></a></li>
+					</ul>
+				</nav>
+
+			</div>
+
+			<div class="bottom">
+				<ul class="icons">
+					<li><a href="https://sante.fr" target="_blank" rel="noopener" class="icon solid fa-globe" title="sante.fr"><span class="label">sante.fr</span></a></li>
+					<li><a href="https://www.santepubliquefrance.fr" target="_blank" rel="noopener" class="icon solid fa-briefcase-medical" title="Santé Publique France"><span class="label">SPF</span></a></li>
+					<li><a href="https://www.doctolib.fr" target="_blank" rel="noopener" class="icon solid fa-calendar-check" title="Doctolib"><span class="label">Doctolib</span></a></li>
+				</ul>
+			</div>
+
+		</div>
+
+		<!-- Main -->
+		<div id="main">
+
+			<!-- Hero -->
+			<section id="top" class="one cover">
+				<div class="container"></div>
+			</section>
+
+			<!-- Alert Status -->
+			<section id="status" class="two">
+				<div class="container">
+
+					<header>
+						<h2>Current Situation</h2>
+						<p id="status-subtitle">Loading health indicators…</p>
+					</header>
+
+					<div id="status-card" class="status-card status-card--loading">
+						<div class="status-level">
+							<span id="status-dot" class="status-dot" aria-hidden="true"></span>
+							<span id="status-label" class="status-label">—</span>
+						</div>
+						<p id="status-message" class="status-message"></p>
+						<div class="status-stats">
+							<div class="stat">
+								<span class="stat-value" id="stat-pos">—</span>
+								<span class="stat-key">Positivity rate</span>
+							</div>
+							<div class="stat">
+								<span class="stat-value" id="stat-hosp">—</span>
+								<span class="stat-key">Hospitalizations</span>
+							</div>
+							<div class="stat">
+								<span class="stat-value" id="stat-vacc">—</span>
+								<span class="stat-key">Vaccination (3 doses)</span>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</section>
+
+			<!-- Actions -->
+			<section id="actions" class="three">
+				<div class="container">
+
+					<header>
+						<h2>What do you need?</h2>
+						<p>Tap a card — Clara will help you right away.</p>
+					</header>
+
+					<div class="row action-grid">
+						<div class="col-4 col-12-mobile">
+							<button class="action-tile" data-msg="Where can I get tested near me?" type="button">
+								<span class="icon solid fa-flask action-tile__icon"></span>
+								<h3>Get Tested</h3>
+								<p>Find a pharmacy or testing center near you</p>
+							</button>
+						</div>
+						<div class="col-4 col-12-mobile">
+							<button class="action-tile" data-msg="I'd like to book a doctor appointment" type="button">
+								<span class="icon solid fa-calendar-check action-tile__icon"></span>
+								<h3>See a Doctor</h3>
+								<p>Book an appointment via Doctolib</p>
+							</button>
+						</div>
+						<div class="col-4 col-12-mobile">
+							<button class="action-tile" data-msg="What are the current health measures and recommendations?" type="button">
+								<span class="icon solid fa-shield-virus action-tile__icon"></span>
+								<h3>Current Measures</h3>
+								<p>Recommendations and rules in effect</p>
+							</button>
+						</div>
+					</div>
+
+				</div>
+			</section>
+
+			<!-- Chat with Clara -->
+			<section id="chat" class="four">
+				<div class="container">
+
+					<header>
+						<h2>Ask Clara</h2>
+						<p>Your official health assistant — available 24/7. Not a doctor; for emergencies, call <strong>15</strong>.</p>
+					</header>
+
+					<!-- Messages -->
+					<div id="messages" class="messages" role="log" aria-live="polite" aria-label="Conversation with Clara"></div>
+
+					<!-- Quick questions -->
+					<div class="quick-questions" id="quick-questions">
+						<p class="quick-label">Suggested questions</p>
+						<div class="quick-chips">
+							<button type="button" class="chip" data-msg="What is the current pandemic situation?">What's the situation?</button>
+							<button type="button" class="chip" data-msg="Where can I get tested near me?">Where to get tested?</button>
+							<button type="button" class="chip" data-msg="I'd like to book a doctor appointment in Paris">Book a doctor</button>
+							<button type="button" class="chip" data-msg="Am I considered at risk?">Am I at risk?</button>
+							<button type="button" class="chip" data-msg="What are the current health measures?">Current measures</button>
+							<button type="button" class="chip" data-msg="Is my vaccine still up to date?">Check my vaccine</button>
+							<button type="button" class="chip" data-msg="I tested positive — what are the isolation rules?">I tested positive</button>
+						</div>
+					</div>
+
+					<!-- Input form -->
+					<form id="chat-form" class="chat-form" autocomplete="off">
+						<div class="row chat-row">
+							<div class="col-10 col-12-mobile">
+								<input
+									id="chat-input"
+									type="text"
+									class="chat-input"
+									placeholder="Ask Clara anything about your health…"
+									aria-label="Your message"
+									maxlength="500"
+								/>
+							</div>
+							<div class="col-2 col-12-mobile">
+								<button type="submit" id="chat-send" class="btn-send">
+									<span class="icon solid fa-paper-plane"></span>
+									Send
+								</button>
+							</div>
+						</div>
+					</form>
+
+					<div class="chat-bottom-row">
+						<button type="button" class="btn-new" id="btn-new-conv">
+							<span class="icon solid fa-plus"></span> New conversation
+						</button>
+					</div>
+
+				</div>
+			</section>
+
+		</div>
+
+		<!-- Footer -->
+		<div id="footer">
+			<ul class="copyright">
+				<li>Pandemic Alert — Médecin Sans Tokens × Santé Publique France</li>
+				<li>Design: <a href="https://html5up.net" target="_blank" rel="noopener">HTML5 UP</a></li>
+			</ul>
+		</div>
+
+		<!-- Template scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+		<!-- Our app -->
+		<script src="/app.js"></script>
+
+	</body>
+</html>
