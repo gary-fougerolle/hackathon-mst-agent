@@ -3,9 +3,15 @@
 # it is read here, not managed, so teardown never removes it.
 
 variable "github_repos" {
-  description = "Repositories allowed to assume the deploy role."
+  description = "Repositories allowed to assume the deploy role, in the classic owner/repo form."
   type        = list(string)
   default     = ["gary-fougerolle/hackathon-mst-agent", "ecointet/hackathon-mst-agent"]
+}
+
+variable "github_repos_immutable" {
+  description = "The same repositories in GitHub's immutable subject form (owner@ownerId/repo@repoId), used when the repo sends immutable OIDC subjects."
+  type        = list(string)
+  default     = ["gary-fougerolle@289966648/hackathon-mst-agent@1444596039", "ecointet@14220374/hackathon-mst-agent@1444156323"]
 }
 
 data "aws_caller_identity" "current" {}
@@ -25,7 +31,10 @@ resource "aws_iam_role" "github_deploy" {
       Condition = {
         StringEquals = { "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com" }
         StringLike = {
-          "token.actions.githubusercontent.com:sub" = [for r in var.github_repos : "repo:${r}:*"]
+          "token.actions.githubusercontent.com:sub" = concat(
+            [for r in var.github_repos : "repo:${r}:*"],
+            [for r in var.github_repos_immutable : "repo:${r}:*"]
+          )
         }
       }
     }]

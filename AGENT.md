@@ -50,6 +50,23 @@ Astro blueprint name: `healthcare-ma-sante-tranquille` (hackathon naming rule `<
 
 ---
 
+## Hackathon stack and links
+
+Clara runs on **Astro**. Every LLM, MCP and API call is meant to go through **Fabric**. The three APIs are described once (`specs/`) and reused everywhere:
+
+| Product | What it holds | Link |
+|---------|---------------|------|
+| AWS | The three demo APIs (one Lambda behind API Gateway), Terraform in [`infra/`](infra/) with shared state in S3 | `https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com` (`/surveillance/v1`, `/pharmacies/v1`, `/appointments/v1`) |
+| Postman | Workspace "[Gary] Ma Santé Tranquille – Hackathon Médecins Sans Tokens" (team Field Services v12): specs, generated collections, mocks, `… – AWS` and `… – Mock` environments, monitors every 6 hours | API Catalog system environment "MST Hackathon (AWS)" |
+| Fern | API portal and Clara's workflows, published from the Fern repo branch `ma-sante-tranquille-hackathon` | https://ma-sante-tranquille.docs.buildwithfern.com, MCP server `/_mcp/server` (`searchDocs`) |
+| GitHub Actions | [`deploy-and-test`](.github/workflows/deploy-and-test.yml): Terraform deploy through the OIDC role `mst-github-deploy`, Postman collection runs against AWS, New Relic deployment marker when configured | Secrets: `POSTMAN_API_KEY`; optional `NEW_RELIC_API_KEY` + variable `NEW_RELIC_ENTITY_GUID` |
+
+Demo rules served by the AWS APIs: `prac-003` has no slot, a social security number sent in clear returns `422`, a booking without `patient_confirmed: true` returns `428`.
+
+> Status: the agent's tools below still call their original sources (Santé publique France open data, OpenStreetMap, a simulated Doctolib). Pointing them at the AWS APIs through Fabric, and reading the workflows from the Fern MCP server, is the next step.
+
+---
+
 ## Tools
 
 | Tool | Description |
