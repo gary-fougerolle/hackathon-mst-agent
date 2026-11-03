@@ -13,6 +13,7 @@ info:
     Dated, simulated data for the hackathon.
   contact:
     name: Team Médecins Sans Tokens
+    email: gary.fougerolle@postman.com
 servers:
   - url: https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com/surveillance/v1
     description: Demo API on AWS (Lambda + API Gateway)

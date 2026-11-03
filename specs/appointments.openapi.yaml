@@ -16,6 +16,7 @@ info:
     - a booking requires the patient's **explicit confirmation**.
   contact:
     name: Team Médecins Sans Tokens
+    email: gary.fougerolle@postman.com
 servers:
   - url: https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com/appointments/v1
     description: Demo API on AWS (Lambda + API Gateway)
