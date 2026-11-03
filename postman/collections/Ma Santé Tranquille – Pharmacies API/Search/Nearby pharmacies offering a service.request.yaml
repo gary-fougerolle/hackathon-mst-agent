@@ -18,3 +18,17 @@ queryParams:
     description: Search radius in kilometers.
 examples: ./.resources/Nearby pharmacies offering a service.resources/examples
 order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status is 200', () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      pm.test('Returns pharmacies sorted by distance', () => {
+        pm.expect(body.results).to.be.an('array').that.is.not.empty;
+        const d = body.results.map((p) => p.distance_km);
+        pm.expect(d).to.eql([...d].sort((a, b) => a - b));
+      });
+      pm.test('Each service is confirmed, to check or unavailable', () => {
+        body.results.forEach((p) => pm.expect(['confirmed', 'to_check', 'unavailable']).to.include(p.service.status));
+      });

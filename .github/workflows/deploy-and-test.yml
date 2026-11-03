@@ -1,11 +1,12 @@
 name: deploy-and-test
 
 # Deploys the Ma Santé Tranquille demo APIs (infra/) to AWS, runs the Postman
-# collections against them, and records a deployment marker in New Relic.
+# collections against them, lints the specs (both reported to the API Catalog),
+# and records a deployment marker in New Relic.
 #
 # Required:
 #   - AWS role mst-github-deploy (infra/github-oidc.tf), assumed through OIDC: no AWS keys stored here.
-#   - Secret POSTMAN_API_KEY (Field Services v12 team), for the collection runs.
+#   - Secret POSTMAN_API_KEY (Field Services v12 team), for the spec lints and collection runs.
 # Optional (the New Relic step is skipped without them):
 #   - Secret NEW_RELIC_API_KEY (User API key) and variable NEW_RELIC_ENTITY_GUID.
 
@@ -13,7 +14,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["infra/**", "specs/**", ".github/workflows/deploy-and-test.yml"]
+    paths: ["infra/**", "specs/**", "postman/**", ".github/workflows/deploy-and-test.yml"]
 
 permissions:
   id-token: write
@@ -54,19 +55,32 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Install Postman CLI
         run: curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
 
-      - name: Run the collections against AWS
+      - name: Log in to Postman
         env:
           POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+        run: postman login --with-api-key "$POSTMAN_API_KEY"
+
+      - name: Lint the API specs (reported to the API Catalog)
+        # Spec IDs in the workspace "[Gary] Ma Santé Tranquille – Hackathon Médecins Sans Tokens".
         run: |
-          postman login --with-api-key "$POSTMAN_API_KEY"
-          # Collection and environment UIDs from the workspace
-          # "[Gary] Ma Santé Tranquille – Hackathon Médecins Sans Tokens".
-          postman collection run 56012510-9fe6c9f0-ef58-4127-96d1-9705e9958358 -e 56012510-7f2e7c75-de2c-479d-9f0f-3479dc6365ae
-          postman collection run 56012510-1b23feb7-d3f9-41a9-81e7-309a6a950c1b -e 56012510-00e61c0c-cafa-4f1e-8947-50f0be4af051
-          postman collection run 56012510-b925173f-dfe6-4d4f-985d-6191c526a5a7 -e 56012510-de5820f4-931b-4134-946e-4bc00d5511ec
+          postman spec lint 7ce2b915-06fe-4c63-b804-b9db805fef82 --report-events
+          postman spec lint cafacd7d-f279-4cae-bdd1-b01d115de642 --report-events
+          postman spec lint c1693eef-b058-4706-9b31-fd88d0aa73bf --report-events
+
+      - name: Run the collections against AWS (reported to the API Catalog)
+        # Runs the Git-native collections from postman/ with the AWS environments,
+        # which are linked to the "MST Hackathon (AWS)" system environment.
+        run: |
+          for api in "Health Surveillance" "Pharmacies" "Appointments"; do
+            postman collection run "postman/collections/Ma Santé Tranquille – $api API" \
+              -e "postman/environments/Ma Santé Tranquille – $api – AWS.environment.yaml" \
+              --report-events
+          done
 
   new-relic-marker:
     needs: test

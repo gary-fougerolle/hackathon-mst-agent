@@ -15,3 +15,33 @@ queryParams:
     description: Optional filter on one tracked infection.
 examples: ./.resources/Epidemic trends around a postal code.resources/examples
 order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      const onMock = (pm.variables.get('baseUrl') || '').includes('mock.pstmn.io');
+
+      pm.test('Status is 200', () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      pm.test('States the source, the date and the area', () => {
+        pm.expect(body.source).to.be.a('string').and.not.empty;
+        pm.expect(body.data_date).to.match(/^\d{4}-\d{2}-\d{2}$/);
+        pm.expect(body.area.postal_code).to.eql('69003');
+      });
+      pm.test('Includes the no-diagnosis disclaimer', () => pm.expect(body.disclaimer).to.be.a('string').and.not.empty);
+      pm.test('Every indicator has a level and a trend', () => {
+        pm.expect(body.indicators).to.be.an('array').that.is.not.empty;
+        body.indicators.forEach((i) => {
+          pm.expect(['low', 'moderate', 'high', 'very_high']).to.include(i.level);
+          pm.expect(['falling', 'stable', 'rising']).to.include(i.trend);
+        });
+      });
+      if (!onMock) {
+        pm.sendRequest({ url: pm.variables.replaceIn('{{baseUrl}}/trends?postal_code=693'), method: 'GET' }, (err, res) => {
+          pm.test('Rejects an invalid postal code with 400', () => {
+            pm.expect(err).to.be.null;
+            pm.expect(res.code).to.eql(400);
+            pm.expect(res.json().code).to.eql('invalid_postal_code');
+          });
+        });
+      }

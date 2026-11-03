@@ -24,3 +24,33 @@ body:
     }
 examples: ./.resources/Book an appointment.resources/examples
 order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      const onMock = (pm.variables.get('baseUrl') || '').includes('mock.pstmn.io');
+
+      if (onMock) {
+        pm.test('Mock replies with a saved example', () => pm.expect(pm.response.code).to.be.oneOf([201, 409, 422, 428]));
+      } else {
+        pm.test('Booking with tokens and patient confirmation returns 201', () => pm.response.to.have.status(201));
+        pm.test('Appointment is confirmed and traced', () => {
+          const body = pm.response.json();
+          pm.expect(body.status).to.eql('confirmed');
+          pm.expect(body.trace_id).to.match(/^trc-/);
+        });
+        pm.sendRequest({ url: pm.variables.replaceIn('{{baseUrl}}/appointments'), method: 'POST', header: { 'Content-Type': 'application/json' }, body: { mode: 'raw', raw: JSON.stringify({ practitioner_id: 'prac-001', slot_id: 'sl-001-1430', reason_summary: 'Fever', ssn: '1 85 05 69 123 456 78', patient_confirmed: true }) } }, (err, res) => {
+          pm.test('A social security number in clear is rejected with 422', () => {
+            pm.expect(err).to.be.null;
+            pm.expect(res.code).to.eql(422);
+            pm.expect(res.json().code).to.eql('sensitive_data_rejected');
+          });
+        });
+        pm.sendRequest({ url: pm.variables.replaceIn('{{baseUrl}}/appointments'), method: 'POST', header: { 'Content-Type': 'application/json' }, body: { mode: 'raw', raw: JSON.stringify({ practitioner_id: 'prac-001', slot_id: 'sl-001-1430', patient_token: 'tok_pat_7f3a91' }) } }, (err, res) => {
+          pm.test('Booking without patient confirmation returns 428', () => {
+            pm.expect(err).to.be.null;
+            pm.expect(res.code).to.eql(428);
+            pm.expect(res.json().code).to.eql('confirmation_required');
+          });
+        });
+      }

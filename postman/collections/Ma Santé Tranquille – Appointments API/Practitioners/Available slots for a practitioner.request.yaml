@@ -11,3 +11,17 @@ pathVariables:
     description: ID returned by the search.
 examples: ./.resources/Available slots for a practitioner.resources/examples
 order: 2000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status is 200', () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      pm.test('prac-001 has available slots', () => pm.expect(body.slots).to.be.an('array').that.is.not.empty);
+      pm.sendRequest({ url: pm.variables.replaceIn('{{baseUrl}}/practitioners/prac-003/slots'), method: 'GET' }, (err, res) => {
+        pm.test('prac-003 has no availability (empty list)', () => {
+          pm.expect(err).to.be.null;
+          pm.expect(res.code).to.eql(200);
+          pm.expect(res.json().slots).to.be.an('array').that.is.empty;
+        });
+      });

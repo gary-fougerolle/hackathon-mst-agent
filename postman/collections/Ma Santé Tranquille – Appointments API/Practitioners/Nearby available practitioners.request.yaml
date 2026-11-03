@@ -17,3 +17,13 @@ queryParams:
     description: In-person or video consultation.
 examples: ./.resources/Nearby available practitioners.resources/examples
 order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status is 200', () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      pm.test('Returns practitioners with their modes', () => {
+        pm.expect(body.results).to.be.an('array').that.is.not.empty;
+        body.results.forEach((p) => pm.expect(p.modes).to.be.an('array').that.is.not.empty);
+      });

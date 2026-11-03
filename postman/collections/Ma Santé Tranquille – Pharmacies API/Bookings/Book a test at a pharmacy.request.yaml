@@ -26,3 +26,22 @@ body:
     }
 examples: ./.resources/Book a test at a pharmacy.resources/examples
 order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      const onMock = (pm.variables.get('baseUrl') || '').includes('mock.pstmn.io');
+
+      if (onMock) {
+        pm.test('Mock replies with a saved example', () => pm.expect(pm.response.code).to.be.oneOf([201, 409, 428]));
+      } else {
+        pm.test('Booking with patient confirmation returns 201', () => pm.response.to.have.status(201));
+        pm.test('Booking is confirmed', () => pm.expect(pm.response.json().status).to.eql('confirmed'));
+        pm.sendRequest({ url: pm.variables.replaceIn('{{baseUrl}}/pharmacies/ph-69003-01/bookings'), method: 'POST', header: { 'Content-Type': 'application/json' }, body: { mode: 'raw', raw: JSON.stringify({ service: 'rapid_antigen_test', patient_token: 'tok_pat_7f3a91' }) } }, (err, res) => {
+          pm.test('Booking without patient confirmation returns 428', () => {
+            pm.expect(err).to.be.null;
+            pm.expect(res.code).to.eql(428);
+            pm.expect(res.json().code).to.eql('confirmation_required');
+          });
+        });
+      }
