@@ -2,7 +2,17 @@
 # One Lambda behind an API Gateway HTTP API. Tear down with ./teardown.sh.
 
 terraform {
-  required_version = ">= 1.6"
+  required_version = ">= 1.10"
+
+  # Shared state: private, versioned, encrypted bucket in the SE account, with native S3 locking.
+  backend "s3" {
+    bucket       = "mst-ma-sante-tranquille-tfstate-005904641462"
+    key          = "ma-sante-tranquille/infra.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
