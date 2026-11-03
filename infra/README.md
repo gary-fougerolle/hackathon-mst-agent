@@ -25,3 +25,7 @@ aws sso login --profile <profile>
 AWS_PROFILE=<profile> ./deploy.sh     # creates everything, prints the URLs
 AWS_PROFILE=<profile> ./teardown.sh   # removes everything
 ```
+
+## GitHub Actions
+
+`.github/workflows/deploy-and-test.yml` deploys this stack, runs the three Postman collections against it and records a New Relic deployment marker. It assumes the `mst-github-deploy` role through OIDC (defined in `github-oidc.tf`, scoped to `mst-*` resources and to this repository), so no AWS key is stored in GitHub. It needs the `POSTMAN_API_KEY` secret; the New Relic step runs only when `NEW_RELIC_API_KEY` and the `NEW_RELIC_ENTITY_GUID` variable are set.
