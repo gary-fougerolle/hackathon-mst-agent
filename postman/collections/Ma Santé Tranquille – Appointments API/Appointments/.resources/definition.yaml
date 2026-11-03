@@ -1,0 +1,3 @@
+$kind: collection
+description: Booking an appointment, after the patient confirms.
+order: 2000

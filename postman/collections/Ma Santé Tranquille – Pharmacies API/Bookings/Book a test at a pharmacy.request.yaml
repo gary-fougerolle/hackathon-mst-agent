@@ -1,0 +1,28 @@
+$kind: http-request
+description: >
+  Books a slot for a service. Call it **only after the patient explicitly
+  confirms**
+
+  (`patient_confirmed: true`). The patient is identified by an opaque token:
+
+  no identity travels in clear.
+url: "{{baseUrl}}/pharmacies/:pharmacy_id/bookings"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+pathVariables:
+  - key: pharmacy_id
+    value: ph-69003-01
+    description: ID returned by the search.
+body:
+  type: json
+  content: |-
+    {
+      "service": "rapid_antigen_test",
+      "slot": "2026-11-04T10:15:00+01:00",
+      "patient_token": "tok_pat_7f3a91",
+      "patient_confirmed": true
+    }
+examples: ./.resources/Book a test at a pharmacy.resources/examples
+order: 1000

@@ -1,0 +1,58 @@
+$kind: http-example
+name: Trends for the area.
+request:
+  url: "{{baseUrl}}/trends?postal_code=69003&condition=flu"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  queryParams:
+    - key: postal_code
+      value: "69003"
+      description: French 5-digit postal code.
+    - key: condition
+      value: flu
+      description: Optional filter on one tracked infection.
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: >-
+      {
+        "source": "Santé publique France – syndromic surveillance (simulated data)",
+        "data_date": "2026-10-26",
+        "week": "2026-W44",
+        "area": {
+          "postal_code": "69003",
+          "department": "Rhône (69)",
+          "region": "Auvergne-Rhône-Alpes"
+        },
+        "indicators": [
+          {
+            "condition": "flu",
+            "level": "moderate",
+            "trend": "rising",
+            "rate_per_100k": 142
+          },
+          {
+            "condition": "covid19",
+            "level": "low",
+            "trend": "stable",
+            "rate_per_100k": 38
+          },
+          {
+            "condition": "bronchiolitis",
+            "level": "high",
+            "trend": "rising",
+            "rate_per_100k": 210
+          }
+        ],
+        "disclaimer": "These trends describe the area. They cannot tell what illness you have."
+      }
+order: 1000

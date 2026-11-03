@@ -1,0 +1,31 @@
+$kind: http-example
+name: No data for this area.
+request:
+  url: "{{baseUrl}}/trends?postal_code=69003&condition=flu"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  queryParams:
+    - key: postal_code
+      value: "69003"
+      description: French 5-digit postal code.
+    - key: condition
+      value: flu
+      description: Optional filter on one tracked infection.
+response:
+  statusCode: 404
+  statusText: Not Found
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "code": "no_data_for_area",
+        "message": "No indicator is available for this postal code this week."
+      }
+order: 3000

@@ -1,0 +1,13 @@
+$kind: http-request
+description: Returns the on-duty pharmacy for the area and how to access it
+  (call first, night window).
+url: "{{baseUrl}}/pharmacies/on-duty?postal_code=69003"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: postal_code
+    value: "69003"
+    description: French 5-digit postal code.
+examples: ./.resources/Nearest on-duty pharmacy.resources/examples
+order: 2000

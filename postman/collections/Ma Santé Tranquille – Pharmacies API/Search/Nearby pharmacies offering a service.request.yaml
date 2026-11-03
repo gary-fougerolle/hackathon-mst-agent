@@ -1,0 +1,20 @@
+$kind: http-request
+description: Lists pharmacies around a postal code, with distance, today's
+  opening hours and the status of the requested service (confirmed or to check).
+url: "{{baseUrl}}/pharmacies?postal_code=69003&service=rapid_antigen_test&radiu\
+  s_km=3"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: postal_code
+    value: "69003"
+    description: French 5-digit postal code.
+  - key: service
+    value: rapid_antigen_test
+    description: Requested service.
+  - key: radius_km
+    value: "3"
+    description: Search radius in kilometers.
+examples: ./.resources/Nearby pharmacies offering a service.resources/examples
+order: 1000

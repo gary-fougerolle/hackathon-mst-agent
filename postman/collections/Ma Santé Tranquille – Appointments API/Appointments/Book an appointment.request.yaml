@@ -1,0 +1,26 @@
+$kind: http-request
+description: >
+  Books the chosen slot. Call it **only after the patient explicitly confirms**
+  the
+
+  practitioner, the slot and the data sent. The patient is identified by
+
+  `patient_token`; a social security number sent in clear is rejected.
+url: "{{baseUrl}}/appointments"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "practitioner_id": "prac-001",
+      "slot_id": "sl-001-1430",
+      "reason_summary": "Fever and cough for 2 days",
+      "patient_token": "tok_pat_7f3a91",
+      "ssn_token": "tok_ssn_c41e07",
+      "patient_confirmed": true
+    }
+examples: ./.resources/Book an appointment.resources/examples
+order: 1000

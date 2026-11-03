@@ -1,0 +1,32 @@
+$kind: collection
+description: >-
+  Local epidemic trends (flu, COVID-19, bronchiolitis, gastroenteritis) by
+  French postal code,
+
+  based on Santé publique France surveillance indicators.
+
+
+  Every response states **the source, the date and the area** of the data.
+  Trends describe an
+
+  area: they **cannot tell what illness a person has**.
+
+
+  Used by the Ma Santé Tranquille agent in step 2 of the "I'm sick" journey.
+
+  Dated, simulated data for the hackathon.
+
+
+
+  Contact Support:
+   Name: Team Médecins Sans Tokens
+variables:
+  baseUrl: https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com/surveillance/v1
+auth:
+  - id: 0688f8c6-a2f5-42a7-9451-337f18b9bd3b
+    type: apikey
+    name: apikey auth
+    credentials:
+      key: X-Api-Key
+      value: "{{apiKey}}"
+      in: header

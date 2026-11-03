@@ -1,0 +1,14 @@
+workspace:
+  id: 25598bee-b40b-453e-8ade-da153efb15f7
+cloudResources:
+  collections:
+    ../postman/collections/Ma Santé Tranquille – Health Surveillance API: 56012510-9fe6c9f0-ef58-4127-96d1-9705e9958358
+    ../postman/collections/Ma Santé Tranquille – Pharmacies API: 56012510-1b23feb7-d3f9-41a9-81e7-309a6a950c1b
+    ../postman/collections/Ma Santé Tranquille – Appointments API: 56012510-b925173f-dfe6-4d4f-985d-6191c526a5a7
+  environments:
+    ../postman/environments/Ma Santé Tranquille – Appointments – AWS.environment.yaml: 56012510-de5820f4-931b-4134-946e-4bc00d5511ec
+    ../postman/environments/Ma Santé Tranquille – Health Surveillance – AWS.environment.yaml: 56012510-7f2e7c75-de2c-479d-9f0f-3479dc6365ae
+    ../postman/environments/Ma Santé Tranquille – Appointments – Mock.environment.yaml: 56012510-938e9e57-98a9-457f-884a-dc211bbef2ec
+    ../postman/environments/Ma Santé Tranquille – Pharmacies – AWS.environment.yaml: 56012510-00e61c0c-cafa-4f1e-8947-50f0be4af051
+    ../postman/environments/Ma Santé Tranquille – Pharmacies – Mock.environment.yaml: 56012510-db1ac3f1-f037-471d-b7f1-81a818d472d0
+    ../postman/environments/Ma Santé Tranquille – Health Surveillance – Mock.environment.yaml: 56012510-8573f202-01c7-4e58-8b56-5a3b8f54d57d

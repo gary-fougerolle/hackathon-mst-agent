@@ -1,0 +1,7 @@
+name: Ma Santé Tranquille – Appointments – Mock
+values:
+  - key: baseUrl
+    value: https://5d28c434-4eed-4a93-ad3e-503392511dac.mock.pstmn.io/appointments/v1
+    description: Appointments API mock (includes the /appointments/v1 prefix).
+  - key: apiKey
+    secret: true

@@ -1,0 +1,61 @@
+$kind: http-example
+name: Pharmacies found, sorted by distance.
+request:
+  url: "{{baseUrl}}/pharmacies?postal_code=69003&service=rapid_antigen_test&radiu\
+    s_km=3"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  queryParams:
+    - key: postal_code
+      value: "69003"
+      description: French 5-digit postal code.
+    - key: service
+      value: rapid_antigen_test
+      description: Requested service.
+    - key: radius_km
+      value: "3"
+      description: Search radius in kilometers.
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "results": [
+          {
+            "pharmacy_id": "ph-69003-01",
+            "name": "Pharmacie de la Part-Dieu",
+            "address": "12 rue Garibaldi, 69003 Lyon",
+            "distance_km": 0.6,
+            "hours_today": "08:30–20:00",
+            "open_now": true,
+            "service": {
+              "code": "rapid_antigen_test",
+              "status": "confirmed",
+              "bookable": true
+            }
+          },
+          {
+            "pharmacy_id": "ph-69003-02",
+            "name": "Pharmacie Monplaisir",
+            "address": "4 avenue des Frères Lumière, 69003 Lyon",
+            "distance_km": 1.4,
+            "hours_today": "09:00–19:30",
+            "open_now": true,
+            "service": {
+              "code": "rapid_antigen_test",
+              "status": "to_check",
+              "bookable": false
+            }
+          }
+        ]
+      }
+order: 1000

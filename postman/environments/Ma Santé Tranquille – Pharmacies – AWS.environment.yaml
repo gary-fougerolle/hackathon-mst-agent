@@ -1,0 +1,7 @@
+name: Ma Santé Tranquille – Pharmacies – AWS
+values:
+  - key: baseUrl
+    value: https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com/pharmacies/v1
+    description: Pharmacies API deployed on AWS (Lambda + API Gateway, infra/ in the hackathon repo).
+  - key: apiKey
+    secret: true

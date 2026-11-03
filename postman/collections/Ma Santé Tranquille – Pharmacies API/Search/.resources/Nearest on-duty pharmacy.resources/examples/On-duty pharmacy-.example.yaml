@@ -1,0 +1,32 @@
+$kind: http-example
+name: On-duty pharmacy.
+request:
+  url: "{{baseUrl}}/pharmacies/on-duty?postal_code=69003"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  queryParams:
+    - key: postal_code
+      value: "69003"
+      description: French 5-digit postal code.
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: >-
+      {
+        "pharmacy_id": "ph-69007-09",
+        "name": "Pharmacie du Rhône",
+        "address": "30 avenue Jean Jaurès, 69007 Lyon",
+        "distance_km": 2.8,
+        "on_duty_until": "2026-11-04T08:30:00+01:00",
+        "access_conditions": "Night window. Bring a prescription or call 3237 first."
+      }
+order: 1000

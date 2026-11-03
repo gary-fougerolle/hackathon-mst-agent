@@ -1,0 +1,69 @@
+$kind: http-example
+name: Practitioners found, sorted by next slot.
+request:
+  url: "{{baseUrl}}/practitioners?postal_code=69003&specialty=general_practitione\
+    r&mode=video"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  queryParams:
+    - key: postal_code
+      value: "69003"
+      description: French 5-digit postal code.
+    - key: specialty
+      value: general_practitioner
+      description: Requested specialty.
+    - key: mode
+      value: video
+      description: In-person or video consultation.
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "results": [
+          {
+            "practitioner_id": "prac-001",
+            "name": "Dr Claire Martin",
+            "specialty": "general_practitioner",
+            "address": "18 rue Paul Bert, 69003 Lyon",
+            "distance_km": 0.8,
+            "modes": [
+              "in_person",
+              "video"
+            ],
+            "next_slot": "2026-11-04T14:30:00+01:00"
+          },
+          {
+            "practitioner_id": "prac-002",
+            "name": "Dr Karim Benali",
+            "specialty": "general_practitioner",
+            "address": "7 cours Lafayette, 69003 Lyon",
+            "distance_km": 1.1,
+            "modes": [
+              "in_person"
+            ],
+            "next_slot": "2026-11-05T09:00:00+01:00"
+          },
+          {
+            "practitioner_id": "prac-003",
+            "name": "Dr Sophie Leroy",
+            "specialty": "general_practitioner",
+            "address": "52 avenue Félix Faure, 69003 Lyon",
+            "distance_km": 1.9,
+            "modes": [
+              "video"
+            ],
+            "next_slot": null
+          }
+        ]
+      }
+order: 1000

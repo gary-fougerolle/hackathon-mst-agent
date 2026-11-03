@@ -1,0 +1,37 @@
+$kind: http-example
+name: Slot no longer available.
+request:
+  url: "{{baseUrl}}/appointments"
+  method: POST
+  headers:
+    - key: Content-Type
+      value: application/json
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  body:
+    type: json
+    content: |-
+      {
+        "practitioner_id": "prac-001",
+        "slot_id": "sl-001-1430",
+        "reason_summary": "Fever and cough for 2 days",
+        "patient_token": "tok_pat_7f3a91",
+        "ssn_token": "tok_ssn_c41e07",
+        "patient_confirmed": true
+      }
+response:
+  statusCode: 409
+  statusText: Conflict
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "code": "slot_unavailable",
+        "message": "This slot was just taken. Offer the patient another slot."
+      }
+order: 2000
