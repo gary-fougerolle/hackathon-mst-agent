@@ -1,0 +1,13 @@
+$kind: http-request
+description: Returns free slots over the next 7 days. An empty list means "no
+  availability" and the agent offers an alternative.
+url: "{{baseUrl}}/practitioners/:practitioner_id/slots"
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: practitioner_id
+    value: prac-001
+    description: ID returned by the search.
+examples: ./.resources/Available slots for a practitioner.resources/examples
+order: 2000

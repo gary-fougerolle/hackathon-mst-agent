@@ -1,0 +1,37 @@
+$kind: collection
+description: >-
+  Finds practitioners and slots (in person or video) and books an appointment.
+
+  Target connector: Doctolib, subject to authorized access. For the hackathon,
+  this API is a
+
+  simulated version that reproduces the journey.
+
+
+  Used by the Ma Santé Tranquille agent in step 4 of the "I'm sick" journey.
+
+
+  Data rules:
+
+  - searches use **the postal code only**, never the identity;
+
+  - the patient is identified by an **opaque token** issued by Fabric;
+
+  - a social security number (French NIR) **sent in clear is rejected** (422);
+
+  - a booking requires the patient's **explicit confirmation**.
+
+
+
+  Contact Support:
+   Name: Team Médecins Sans Tokens
+variables:
+  baseUrl: https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com/appointments/v1
+auth:
+  - id: 762a1cf8-89fe-48d6-8ee6-e1a8755d2922
+    type: apikey
+    name: apikey auth
+    credentials:
+      key: X-Api-Key
+      value: "{{apiKey}}"
+      in: header

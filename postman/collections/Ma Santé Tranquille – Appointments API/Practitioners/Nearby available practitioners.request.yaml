@@ -1,0 +1,19 @@
+$kind: http-request
+description: Lists practitioners around a postal code, with their next available slot.
+url: "{{baseUrl}}/practitioners?postal_code=69003&specialty=general_practitione\
+  r&mode=video"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: postal_code
+    value: "69003"
+    description: French 5-digit postal code.
+  - key: specialty
+    value: general_practitioner
+    description: Requested specialty.
+  - key: mode
+    value: video
+    description: In-person or video consultation.
+examples: ./.resources/Nearby available practitioners.resources/examples
+order: 1000

@@ -1,0 +1,39 @@
+$kind: http-example
+name: Patient confirmation missing.
+request:
+  url: "{{baseUrl}}/pharmacies/:pharmacy_id/bookings"
+  method: POST
+  headers:
+    - key: Content-Type
+      value: application/json
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  pathVariables:
+    - key: pharmacy_id
+      value: ph-69003-01
+      description: ID returned by the search.
+  body:
+    type: json
+    content: |-
+      {
+        "service": "rapid_antigen_test",
+        "slot": "2026-11-04T10:15:00+01:00",
+        "patient_token": "tok_pat_7f3a91",
+        "patient_confirmed": true
+      }
+response:
+  statusCode: 428
+  statusText: Precondition Required
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "code": "confirmation_required",
+        "message": "A booking requires the patient's explicit confirmation."
+      }
+order: 3000

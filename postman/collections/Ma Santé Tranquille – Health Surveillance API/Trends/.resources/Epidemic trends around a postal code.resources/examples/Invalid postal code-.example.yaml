@@ -1,0 +1,31 @@
+$kind: http-example
+name: Invalid postal code.
+request:
+  url: "{{baseUrl}}/trends?postal_code=69003&condition=flu"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  queryParams:
+    - key: postal_code
+      value: "69003"
+      description: French 5-digit postal code.
+    - key: condition
+      value: flu
+      description: Optional filter on one tracked infection.
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "code": "invalid_postal_code",
+        "message": "The postal code must have 5 digits."
+      }
+order: 2000

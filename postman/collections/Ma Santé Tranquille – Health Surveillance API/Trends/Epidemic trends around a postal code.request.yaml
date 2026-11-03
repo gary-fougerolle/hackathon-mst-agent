@@ -1,0 +1,17 @@
+$kind: http-request
+description: |
+  Returns the latest indicators for the area of the postal code.
+  Only the postal code is sent: no data about the person.
+url: "{{baseUrl}}/trends?postal_code=69003&condition=flu"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: postal_code
+    value: "69003"
+    description: French 5-digit postal code.
+  - key: condition
+    value: flu
+    description: Optional filter on one tracked infection.
+examples: ./.resources/Epidemic trends around a postal code.resources/examples
+order: 1000

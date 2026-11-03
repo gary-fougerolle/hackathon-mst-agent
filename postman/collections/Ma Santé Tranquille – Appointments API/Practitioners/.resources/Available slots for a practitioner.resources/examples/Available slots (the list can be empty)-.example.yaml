@@ -1,0 +1,44 @@
+$kind: http-example
+name: Available slots (the list can be empty).
+request:
+  url: "{{baseUrl}}/practitioners/:practitioner_id/slots"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  pathVariables:
+    - key: practitioner_id
+      value: prac-001
+      description: ID returned by the search.
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "practitioner_id": "prac-001",
+        "slots": [
+          {
+            "slot_id": "sl-001-1430",
+            "start": "2026-11-04T14:30:00+01:00",
+            "mode": "in_person"
+          },
+          {
+            "slot_id": "sl-001-1645",
+            "start": "2026-11-04T16:45:00+01:00",
+            "mode": "video"
+          },
+          {
+            "slot_id": "sl-001-0915",
+            "start": "2026-11-05T09:15:00+01:00",
+            "mode": "in_person"
+          }
+        ]
+      }
+order: 1000

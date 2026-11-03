@@ -1,0 +1,20 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/practitioners/prac-003/slots"
+  method: GET
+  headers:
+    Accept: application/json
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "practitioner_id": "prac-003",
+        "slots": [],
+        "message": "No slot in the next 7 days."
+      }
+order: 2000

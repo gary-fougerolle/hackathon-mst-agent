@@ -1,0 +1,32 @@
+$kind: collection
+description: >-
+  Finds nearby pharmacies, their opening hours and services (rapid antigen test,
+  vaccination),
+
+  finds the on-duty pharmacy, and books a test.
+
+
+  Used by the Ma Santé Tranquille agent in step 3 of the "I'm sick" journey.
+
+  Searches use **the postal code only**, never the identity. A booking is sent
+  only after
+
+  the patient's **explicit confirmation**.
+
+
+  Simulated data for the hackathon.
+
+
+
+  Contact Support:
+   Name: Team Médecins Sans Tokens
+variables:
+  baseUrl: https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com/pharmacies/v1
+auth:
+  - id: bd466a21-7793-472e-bbbb-904ff7171ac7
+    type: apikey
+    name: apikey auth
+    credentials:
+      key: X-Api-Key
+      value: "{{apiKey}}"
+      in: header

@@ -1,0 +1,7 @@
+name: Ma Santé Tranquille – Health Surveillance – Mock
+values:
+  - key: baseUrl
+    value: https://83d195f4-d9d5-454f-85bf-71ef1e73c1d6.mock.pstmn.io/surveillance/v1
+    description: Health Surveillance API mock (includes the /surveillance/v1 prefix).
+  - key: apiKey
+    secret: true

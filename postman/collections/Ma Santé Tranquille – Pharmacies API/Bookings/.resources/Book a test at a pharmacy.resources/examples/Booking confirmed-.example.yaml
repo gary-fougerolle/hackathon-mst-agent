@@ -1,0 +1,43 @@
+$kind: http-example
+name: Booking confirmed.
+request:
+  url: "{{baseUrl}}/pharmacies/:pharmacy_id/bookings"
+  method: POST
+  headers:
+    - key: Content-Type
+      value: application/json
+    - key: Accept
+      value: application/json
+    - key: X-Api-Key
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+  pathVariables:
+    - key: pharmacy_id
+      value: ph-69003-01
+      description: ID returned by the search.
+  body:
+    type: json
+    content: |-
+      {
+        "service": "rapid_antigen_test",
+        "slot": "2026-11-04T10:15:00+01:00",
+        "patient_token": "tok_pat_7f3a91",
+        "patient_confirmed": true
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "booking_id": "bk-ph-000184",
+        "status": "confirmed",
+        "pharmacy": "Pharmacie de la Part-Dieu",
+        "service": "rapid_antigen_test",
+        "slot": "2026-11-04T10:15:00+01:00",
+        "instructions": "Arrive 5 minutes before your slot."
+      }
+order: 1000
