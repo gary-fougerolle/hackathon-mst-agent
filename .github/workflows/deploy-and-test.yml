@@ -66,7 +66,7 @@ jobs:
         run: postman login --with-api-key "$POSTMAN_API_KEY"
 
       - name: Lint the API specs (reported to the API Catalog)
-        # Spec IDs in the workspace "[Gary] Ma Santé Tranquille – Hackathon Médecins Sans Tokens".
+        # Spec IDs in the workspace "Ma Santé Tranquille – Hackathon Médecins Sans Tokens".
         run: |
           postman spec lint 7ce2b915-06fe-4c63-b804-b9db805fef82 --report-events
           postman spec lint cafacd7d-f279-4cae-bdd1-b01d115de642 --report-events

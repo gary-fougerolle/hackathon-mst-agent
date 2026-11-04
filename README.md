@@ -57,7 +57,7 @@ Team repo: https://github.com/postman-solutions-eng/hackathon-mst-agent. Clara r
 | Product | What it holds | Link |
 |---------|---------------|------|
 | AWS | The three demo APIs (one Lambda behind API Gateway), Terraform in [`infra/`](infra/) with shared state in S3 | `https://yyw2lxe0fl.execute-api.us-east-1.amazonaws.com` (`/surveillance/v1`, `/pharmacies/v1`, `/appointments/v1`) |
-| Postman | Workspace "[Gary] Ma Santé Tranquille – Hackathon Médecins Sans Tokens" (team Field Services v12): specs, generated collections, mocks, `… – AWS` and `… – Mock` environments, monitors every 6 hours | API Catalog system environment "MST Hackathon (AWS)" |
+| Postman | Workspace "Ma Santé Tranquille – Hackathon Médecins Sans Tokens" (team Field Services v12): specs, generated collections, mocks, `… – AWS` and `… – Mock` environments, monitors every 6 hours | API Catalog system environment "MST Hackathon (AWS)" |
 | Fern | API portal and Clara's workflows, published from the Fern repo branch `ma-sante-tranquille-hackathon` | https://ma-sante-tranquille.docs.buildwithfern.com, MCP server `/_mcp/server` (`searchDocs`) |
 | GitHub Actions | [`deploy-and-test`](.github/workflows/deploy-and-test.yml): Terraform deploy through the OIDC role `mst-github-deploy`, Postman collection runs against AWS, New Relic deployment marker when configured | Secrets: `POSTMAN_API_KEY`; optional `NEW_RELIC_API_KEY` + variable `NEW_RELIC_ENTITY_GUID` |
 
