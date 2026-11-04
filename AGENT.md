@@ -52,7 +52,7 @@ Astro blueprint name: `healthcare-ma-sante-tranquille` (hackathon naming rule `<
 
 ## Hackathon stack and links
 
-Clara runs on **Astro**. Every LLM, MCP and API call is meant to go through **Fabric**. The three APIs are described once (`specs/`) and reused everywhere:
+Team repo: https://github.com/postman-solutions-eng/hackathon-mst-agent. Clara runs on **Astro**. Every LLM, MCP and API call is meant to go through **Fabric**. The three APIs are described once (`specs/`) and reused everywhere:
 
 | Product | What it holds | Link |
 |---------|---------------|------|

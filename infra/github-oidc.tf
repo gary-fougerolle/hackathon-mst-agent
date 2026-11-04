@@ -3,15 +3,15 @@
 # it is read here, not managed, so teardown never removes it.
 
 variable "github_repos" {
-  description = "Repositories allowed to assume the deploy role, in the classic owner/repo form."
+  description = "Repositories allowed to assume the deploy role, in the classic owner/repo form. The team repo is postman-solutions-eng; the fork stays allowed until it is archived."
   type        = list(string)
-  default     = ["gary-fougerolle/hackathon-mst-agent", "ecointet/hackathon-mst-agent"]
+  default     = ["postman-solutions-eng/hackathon-mst-agent", "gary-fougerolle/hackathon-mst-agent"]
 }
 
 variable "github_repos_immutable" {
   description = "The same repositories in GitHub's immutable subject form (owner@ownerId/repo@repoId), used when the repo sends immutable OIDC subjects."
   type        = list(string)
-  default     = ["gary-fougerolle@289966648/hackathon-mst-agent@1444596039", "ecointet@14220374/hackathon-mst-agent@1444156323"]
+  default     = ["postman-solutions-eng@91276282/hackathon-mst-agent@1444154050", "gary-fougerolle@289966648/hackathon-mst-agent@1444596039"]
 }
 
 data "aws_caller_identity" "current" {}
